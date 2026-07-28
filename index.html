@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长沙 · 吉首 3D 高清卫星全景</title>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Cesium.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Microsoft YaHei',sans-serif;background:#000}
+#cesiumContainer{width:100%;height:100%}
+#streetPanel{position:absolute;top:0;right:0;width:42%;height:100%;z-index:10;display:none;background:#000;border-left:2px solid rgba(255,255,255,.25)}
+#streetPanel iframe{width:100%;height:100%;border:none}
+#closeSt{position:absolute;top:10px;right:10px;z-index:11;background:rgba(0,0,0,.75);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px}
+#closeSt:hover{background:rgba(255,50,50,.85)}
+#loading{position:absolute;top:0;left:0;width:100%;height:100%;background:#0a0a0a;z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:15px;transition:opacity .5s}
+#loading .sp{width:44px;height:44px;border:4px solid rgba(255,255,255,.15);border-top-color:#0af;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toolbar{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;z-index:20;pointer-events:none;display:flex;gap:20px;align-items:center;border:1px solid rgba(255,255,255,.12)}
+#toolbar .k{display:inline-block;background:rgba(255,255,255,.16);padding:2px 8px;border-radius:4px;margin:0 2px;font-weight:bold;font-size:12px}
+#info{position:absolute;bottom:30px;left:30px;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);color:#fff;padding:14px 22px;border-radius:14px;font-size:13px;z-index:20;pointer-events:none;line-height:1.9;border:1px solid rgba(255,255,255,.1)}
+#sideBtns{position:absolute;top:50%;right:14px;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:10px}
+.sb{background:rgba(0,0,0,.7);backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,.22);padding:10px 18px;border-radius:10px;cursor:pointer;font-size:13px;white-space:nowrap;transition:all .2s}
+.sb:hover{background:rgba(0,180,255,.4);border-color:rgba(0,200,255,.7)}
+.sb.hl{background:rgba(255,140,0,.4);border-color:rgba(255,180,50,.7)}
+#landmarks{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);z-index:20;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92%}
+.lb{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.18);padding:7px 15px;border-radius:18px;cursor:pointer;font-size:12px;transition:all .2s;white-space:nowrap}
+.lb:hover{background:rgba(255,150,0,.45);border-color:rgba(255,180,50,.7)}
+.lb.js{background:rgba(0,180,100,.35);border-color:rgba(0,255,130,.5)}
+#hud{position:absolute;bottom:30px;right:30px;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);color:#0f0;padding:8px 16px;border-radius:8px;font-size:13px;z-index:20;pointer-events:none;font-family:monospace;border:1px solid rgba(0,255,0,.25)}
+.cesium-viewer-bottom,.cesium-viewer-toolbar{display:none!important}
+</style>
+</head>
+<body>
+<div id="loading"><div class="sp"></div><div>3D 引擎加载中，首次可能需 10-30 秒...</div></div>
+<div id="cesiumContainer"></div>
+<div id="streetPanel"><button id="closeSt" onclick="closeStreet()">✕ 关闭街景</button><iframe id="sframe" src="" allow="geolocation"></iframe></div>
+<div id="toolbar">
+  <span><span class="k">WASD</span> 飞行</span><span><span class="k">空格</span> 上升</span><span><span class="k">C</span> 下降</span><span><span class="k">Shift</span> 加速</span><span><span class="k">鼠标</span> 视角</span>
+</div>
+<div id="info"><b>📍 长沙 · 吉首 3D 卫星全景</b><br>高德卫星影像 18 级 · 国内最高清</div>
+<div id="sideBtns">
+  <button class="sb hl" onclick="goChangsha()">🏠 长沙市</button>
+  <button class="sb hl" onclick="goJishou()">🏠 吉首市</button>
+  <button class="sb" onclick="goTopDown()">📐 俯视</button>
+  <button class="sb" onclick="toggleStreet()">🔍 街景</button>
+</div>
+<div id="landmarks">
+  <button class="lb" onclick="fly(28.1961,112.9722,'岳麓山')">⛰岳麓山</button>
+  <button class="lb" onclick="fly(28.1887,112.9507,'橘子洲')">🍊橘子洲</button>
+  <button class="lb" onclick="fly(28.2001,112.9747,'五一广场')">🏙五一广场</button>
+  <button class="lb" onclick="fly(28.1943,113.0128,'火车站')">🚄火车站</button>
+  <button class="lb" onclick="fly(28.1823,112.9764,'天心阁')">🏯天心阁</button>
+  <button class="lb" onclick="fly(28.2522,112.8802,'梅溪湖')">🌊梅溪湖</button>
+  <button class="lb js" onclick="fly(28.2624,109.6981,'吉首市')">🏠吉首市</button>
+  <button class="lb js" onclick="fly(28.3165,109.7342,'乾州古城')">🏯乾州古城</button>
+  <button class="lb js" onclick="fly(28.2841,109.7206,'峒河公园')">🌳峒河公园</button>
+</div>
+<div id="hud">速度:1x | 高度:--m</div>
+<script>
+Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYWE1OWUxNy1mMWZiLTQzYjYtYTQ0OS1kMWFjYmFkNjc5YzciLCJpZCI6NTc3MzM3LCJpYXQiOjE3NDA3NjA4NjB9.X6WqFPRFdT5TQqH3H4vqKxvkFdFdZ9nEaBSEHYm2Qxg';
+const v=new Cesium.Viewer('cesiumContainer',{animation:false,timeline:false,baseLayerPicker:false,fullscreenButton:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,geocoder:false,infoBox:false,selectionIndicator:false,vrButton:false,msaaSamples:4,targetFrameRate:60,resolutionScale:1.0});
+v.scene.skyBox.show=true;v.scene.skyAtmosphere.show=true;v.scene.globe.enableLighting=true;v.scene.globe.showGroundAtmosphere=true;v.scene.globe.maximumScreenSpaceError=0.5;v.scene.screenSpaceCameraController.enableCollisionDetection=false;v.scene.screenSpaceCameraController.minimumZoomDistance=3;v.scene.screenSpaceCameraController.maximumZoomDistance=5e7;v.scene.fog.enabled=false;
+v.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',subdomains:['1','2','3','4'],maximumLevel:18,credit:new Cesium.Credit('高德卫星 18级')}));
+v.terrainProvider=Cesium.createWorldTerrain({requestWaterMask:true,requestVertexNormals:true});
+v.scene.globe.tileLoadProgressEvent.addEventListener(c=>{if(c===0)setTimeout(()=>{const l=document.getElementById('loading');l.style.opacity='0';setTimeout(()=>l.style.display='none',500)},800)});
+function go(lon,lat,h){v.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(lon,lat,h||3000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-40),roll:0},duration:1.5})}
+function goChangsha(){go(112.9388,28.2282,3000);document.getElementById('info').innerHTML='<b>📍 长沙市</b><br>高德卫星 18级 · 112.9388°E 28.2282°N'}
+function goJishou(){go(109.6981,28.2624,3000);document.getElementById('info').innerHTML='<b>📍 吉首市</b><br>高德卫星 18级 · 109.6981°E 28.2624°N'}
+function fly(lon,lat,name){document.getElementById('info').innerHTML='<b>📍 '+name+'</b><br>飞行中...';go(lon,lat,1500);setTimeout(()=>{document.getElementById('info').innerHTML='<b>📍 '+name+'</b><br>高德卫星 18级 · '+lon.toFixed(4)+'°E '+lat.toFixed(4)+'°N'},2000)}
+function goTopDown(){const p=v.camera.positionCartographic;v.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(p.longitude),Cesium.Math.toDegrees(p.latitude),p.height),orientation:{heading:v.camera.heading,pitch:Cesium.Math.toRadians(-90),roll:0},duration:1})}
+v.camera.setView({destination:Cesium.Cartesian3.fromDegrees(112.9388,28.2282,3000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-40),roll:0}});
+const keys={};let sp=1;
+window.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='ShiftLeft'||e.code==='ShiftRight')sp=5;if(e.code==='Space'||e.code==='KeyC')e.preventDefault();hud()});
+window.addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='ShiftLeft'||e.code==='ShiftRight')sp=1;hud()});
+function hud(){const p=v.camera.positionCartographic;document.getElementById('hud').textContent='速度:'+sp+'x | 高度:'+(p?Math.round(p.height)+'m':'--m')}
+v.clock.onTick.addEventListener(()=>{const c=v.camera,p=c.positionCartographic;if(!p)return;const s=120*sp*Math.max(p.height,50)/200,m=new Cesium.Cartesian3(),r=c.right,d=c.direction;if(keys['KeyW']){const f=Cesium.Cartesian3.normalize(new Cesium.Cartesian3(d.x,d.y,0),new Cesium.Cartesian3());Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(f,s,new Cesium.Cartesian3()),m)}if(keys['KeyS']){const f=Cesium.Cartesian3.normalize(new Cesium.Cartesian3(d.x,d.y,0),new Cesium.Cartesian3());Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(f,-s,new Cesium.Cartesian3()),m)}if(keys['KeyA']){const l=Cesium.Cartesian3.normalize(new Cesium.Cartesian3(-r.x,-r.y,0),new Cesium.Cartesian3());Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(l,s,new Cesium.Cartesian3()),m)}if(keys['KeyD']){const ri=Cesium.Cartesian3.normalize(new Cesium.Cartesian3(r.x,r.y,0),new Cesium.Cartesian3());Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(ri,s,new Cesium.Cartesian3()),m)}if(keys['Space'])Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.UNIT_Z,s*2,new Cesium.Cartesian3()),m);if(keys['KeyC'])Cesium.Cartesian3.add(m,Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.UNIT_Z,-s*2,new Cesium.Cartesian3()),m);if(Cesium.Cartesian3.magnitude(m)>0)c.move(m);if(Math.random()<.03)hud()});
+// 街景
+let streetOn=false;
+function toggleStreet(){const lat=v.camera.positionCartographic?Cesium.Math.toDegrees(v.camera.positionCartographic.latitude):28.2282;const lon=v.camera.positionCartographic?Cesium.Math.toDegrees(v.camera.positionCartographic.longitude):112.9388;if(streetOn){closeStreet();return}document.getElementById('sframe').src='https://j.map.baidu.com/embed/street?l='+lat+','+lon+'&p=street&f=1&o=1&z=18&t=B_NORMAL_MAP';document.getElementById('streetPanel').style.display='block';streetOn=true}
+function closeStreet(){document.getElementById('streetPanel').style.display='none';document.getElementById('sframe').src='';streetOn=false}
+v.screenSpaceEventHandler.setInputAction(click=>{const cart=v.camera.pickEllipsoid(click.position,v.scene.globe.ellipsoid);if(cart){const cg=Cesium.Cartographic.fromCartesian(cart);document.getElementById('sframe').src='https://j.map.baidu.com/embed/street?l='+Cesium.Math.toDegrees(cg.latitude)+','+Cesium.Math.toDegrees(cg.longitude)+'&p=street&f=1&o=1&z=18&t=B_NORMAL_MAP';document.getElementById('streetPanel').style.display='block';streetOn=true}},Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+</script>
+</body>
+</html>
