@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
-.leaflet-tile{image-rendering:auto}
+.leaflet-tile{image-rendering:crisp-edges}
 .leaflet-container{background:#000}
 #panel{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .btn{background:rgba(0,0,0,.75);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:all .2s;white-space:nowrap}
@@ -46,16 +46,14 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 </div>
 <script src="leaflet/leaflet.js"></script>
 <script>
-var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:18}).setView([28.2282,112.9388],14);
+var map=L.map('map',{zoomControl:false,minZoom:10,maxZoom:18}).setView([28.2282,112.9388],16);
 map.attributionControl.setPrefix('');
 
-// 高德卫星 scl=1 超清（512px瓦片→256px渲染，有效2倍像素密度）
-L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=6',{
+L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
   maxZoom:18,
-  minZoom:3,
+  minZoom:10,
   subdomains:'1234',
-  tileSize:256,
-  attribution:'高德卫星'
+  tileSize:256
 }).addTo(map);
 
 // 地点标记
@@ -99,8 +97,8 @@ function go(lat,lng,zoom){
     document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N';
   },1500);
 }
-function goCS(){go(28.2282,112.9388,14);}
-function goJS(){go(28.2624,109.6981,14);}
+function goCS(){go(28.2282,112.9388,16);}
+function goJS(){go(28.2624,109.6981,16);}
 </script>
 </body>
 </html>
