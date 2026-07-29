@@ -38,7 +38,7 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 <button class="btn js" onclick="go(28.2530,109.7060,18)">德城园</button>
 <button class="btn hl" onclick="go(28.1548,112.9950,18)">凯德广场</button>
 </div>
-<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星影像 18 级 · 8K 超高清</div>
+<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>Esri 全球卫星影像 19 级</div>
 <div id="coords">--</div>
 <div id="zoom">
 <button class="zb" onclick="map.zoomIn()">+</button>
@@ -46,27 +46,15 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 </div>
 <script src="leaflet/leaflet.js"></script>
 <script>
-var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:18,preferCanvas:true,updateWhenIdle:false}).setView([28.2282,112.9388],14);
+var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:19,preferCanvas:true,updateWhenIdle:false}).setView([28.2282,112.9388],14);
 map.attributionControl.setPrefix('');
 
-// 高德卫星影像 18级
-L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
-  subdomains:['1','2','3','4'],
-  maxZoom:18,
+// Esri 全球卫星影像 最高19级（比高德多一级）
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+  maxZoom:19,
   minZoom:3,
-  attribution:'高德卫星',
-  tileSize:256,
-  zoomOffset:0
-}).addTo(map);
-
-// 路网标注叠加
-L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',{
-  subdomains:['1','2','3','4'],
-  maxZoom:18,
-  attribution:'高德路网',
-  opacity:0.5,
-  tileSize:256,
-  zoomOffset:0
+  attribution:'Esri卫星',
+  tileSize:256
 }).addTo(map);
 
 // 坐标显示
