@@ -33,11 +33,11 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 <button class="btn" onclick="go(28.1940,113.0130,16)">火车站</button>
 <button class="btn" onclick="go(28.1887,112.9765,18)">天心阁</button>
 <button class="btn" onclick="go(28.1930,112.8920,17)">梅溪湖</button>
-<button class="btn js" onclick="go(28.2550,109.7000,17)">乾州古城</button>
+<button class="btn js" onclick="go(28.255619,109.702951,18)">乾州古城</button>
 <button class="btn js" onclick="go(28.2980,109.7220,17)">峒河公园</button>
-<button class="btn js" onclick="go(28.2480,109.6945,18)">德城园</button>
+<button class="btn js" onclick="go(28.264574,109.710690,18)">德城园</button>
 <button class="btn hl" onclick="go(28.1548,112.9950,18)">凯德广场</button>
-<button class="btn" onclick="go(28.1608,112.9945,18)">建发央玺</button>
+<button class="btn" onclick="go(28.164145,113.004134,18)">建发央玺</button>
 </div>
 <div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 超清 18级</div>
 <div id="coords">--</div>
@@ -47,7 +47,7 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 </div>
 <script src="leaflet/leaflet.js"></script>
 <script>
-var map=L.map('map',{zoomControl:false,minZoom:10,maxZoom:18}).setView([28.2282,112.9388],16);
+var map=L.map('map',{zoomControl:false,minZoom:10,maxZoom:18}).setView([28.2282,112.9388],18);
 map.attributionControl.setPrefix('');
 
 L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
@@ -66,10 +66,10 @@ var spots=[
   {name:'天心阁',lat:28.1887,lng:112.9765,color:'#ff6b35'},
   {name:'梅溪湖',lat:28.1930,lng:112.8920,color:'#ff6b35'},
   {name:'凯德广场',lat:28.1548,lng:112.9950,color:'#ffaa00'},
-  {name:'建发央玺',lat:28.1608,lng:112.9945,color:'#ff6b35'},
-  {name:'乾州古城',lat:28.2541,lng:109.7000,color:'#00c878'},
+  {name:'建发央玺',lat:28.164145,lng:113.004134,color:'#ff6b35'},
+  {name:'乾州古城',lat:28.255619,lng:109.702951,color:'#00c878'},
   {name:'峒河公园',lat:28.2980,lng:109.7220,color:'#00c878'},
-  {name:'德城园',lat:28.2480,lng:109.6945,color:'#00c878'}
+  {name:'德城园',lat:28.264574,lng:109.710690,color:'#00c878'}
 ];
 
 spots.forEach(function(s){
@@ -99,8 +99,8 @@ function go(lat,lng,zoom){
     document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N';
   },1500);
 }
-function goCS(){go(28.2282,112.9388,16);}
-function goJS(){go(28.2624,109.6981,16);}
+function goCS(){go(28.2282,112.9388,18);}
+function goJS(){go(28.2624,109.6981,18);}
 </script>
 </body>
 </html>
