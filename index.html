@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
-.leaflet-tile{image-rendering:crisp-edges}
+.leaflet-tile{image-rendering:auto}
 .leaflet-container{background:#000}
 #panel{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .btn{background:rgba(0,0,0,.75);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:all .2s;white-space:nowrap}
@@ -38,7 +38,7 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 <button class="btn js" onclick="go(28.2530,109.7060,18)">德城园</button>
 <button class="btn hl" onclick="go(28.1548,112.9950,18)">凯德广场</button>
 </div>
-<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 18级</div>
+<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 超清 18级</div>
 <div id="coords">--</div>
 <div id="zoom">
 <button class="zb" onclick="map.zoomIn()">+</button>
@@ -49,8 +49,8 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:18}).setView([28.2282,112.9388],14);
 map.attributionControl.setPrefix('');
 
-// 高德卫星
-L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
+// 高德卫星 scl=1 超清（512px瓦片→256px渲染，有效2倍像素密度）
+L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=6',{
   maxZoom:18,
   minZoom:3,
   subdomains:'1234',
