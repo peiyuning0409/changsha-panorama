@@ -38,7 +38,7 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 <button class="btn js" onclick="go(28.2530,109.7060,18)">德城园</button>
 <button class="btn hl" onclick="go(28.1548,112.9950,18)">凯德广场</button>
 </div>
-<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>Esri 全球卫星影像 19 级</div>
+<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星影像 18级</div>
 <div id="coords">--</div>
 <div id="zoom">
 <button class="zb" onclick="map.zoomIn()">+</button>
@@ -46,14 +46,15 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 </div>
 <script src="leaflet/leaflet.js"></script>
 <script>
-var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:19,preferCanvas:true,updateWhenIdle:false}).setView([28.2282,112.9388],14);
+var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:18,preferCanvas:true,updateWhenIdle:false}).setView([28.2282,112.9388],14);
 map.attributionControl.setPrefix('');
 
-// Esri 全球卫星影像 最高19级（比高德多一级）
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-  maxZoom:19,
+// 高德卫星影像 国内最清晰
+L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
+  maxZoom:18,
   minZoom:3,
-  attribution:'Esri卫星',
+  subdomains:'1234',
+  attribution:'高德卫星',
   tileSize:256
 }).addTo(map);
 
@@ -65,7 +66,7 @@ map.on('mousemove',function(e){
 
 function go(lat,lng,zoom){
   map.flyTo([lat,lng],zoom||16,{duration:1.2});
-  setTimeout(()=>document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星影像 18级 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N',1500);
+  setTimeout(()=>document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 18级 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N',1500);
 }
 function goCS(){go(28.2282,112.9388,14);}
 function goJS(){go(28.2624,109.6981,14);}
