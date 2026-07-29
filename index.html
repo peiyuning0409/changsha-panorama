@@ -38,7 +38,7 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 <button class="btn js" onclick="go(28.2530,109.7060,18)">德城园</button>
 <button class="btn hl" onclick="go(28.1548,112.9950,18)">凯德广场</button>
 </div>
-<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 2K超清 18级</div>
+<div id="info"><b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 18级</div>
 <div id="coords">--</div>
 <div id="zoom">
 <button class="zb" onclick="map.zoomIn()">+</button>
@@ -49,13 +49,13 @@ html,body,#map{width:100%;height:100%;font-family:'Microsoft YaHei',sans-serif}
 var map=L.map('map',{zoomControl:false,minZoom:3,maxZoom:18}).setView([28.2282,112.9388],14);
 map.attributionControl.setPrefix('');
 
-// 高德卫星 scl=1 超清（512px瓦片，双倍像素密度）
-L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=6',{
+// 高德卫星
+L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{
   maxZoom:18,
   minZoom:3,
   subdomains:'1234',
-  tileSize:512,
-  attribution:'高德卫星 2K'
+  tileSize:256,
+  attribution:'高德卫星'
 }).addTo(map);
 
 // 地点标记
@@ -96,7 +96,7 @@ map.on('mousemove',function(e){
 function go(lat,lng,zoom){
   map.flyTo([lat,lng],zoom||16,{duration:1.2});
   setTimeout(function(){
-    document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 2K超清 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N';
+    document.getElementById('info').innerHTML='<b>长沙 · 吉首 高清卫星全景</b><br>高德卫星 · '+lng.toFixed(4)+'°E '+lat.toFixed(4)+'°N';
   },1500);
 }
 function goCS(){go(28.2282,112.9388,14);}
